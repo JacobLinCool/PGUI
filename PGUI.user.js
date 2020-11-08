@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
 // @date         2020.11.09
-// @version      0.2.1
+// @version      0.2.2
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -209,10 +209,12 @@ window.PGUI = function() {
             #document_reader_${this.rid} {
                 display: none;
                 position: fixed;
+                top: 0;
+                left: 0;
                 width: calc(100% - 32px);
                 height: calc(100% - 32px);
                 z-index: 999999;
-                background-color: rgba(255,255,255,0.8);
+                background-color: rgba(255,255,255,0.9);
                 margin: 16px;
                 border-radius: 10px;
                 border: solid 1px lightgray;
