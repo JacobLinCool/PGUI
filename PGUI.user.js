@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
 // @date         2020.11.08
-// @version      0.1.2
+// @version      0.1.3
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -10,7 +10,7 @@
 
 window.PGUI = function() {
     let self = this;
-    let uid = self.uid = Math.floor(1e6+Math.random()*9e6).toString(36);
+    let uid = this.uid = Math.floor(1e6+Math.random()*9e6).toString(36);
     /* Config */
     this.cfg = {
         draggable: true,
@@ -85,7 +85,7 @@ window.PGUI = function() {
     plugin_board.appendChild(plugin_board_head);
     style_sheet.innerHTML += `
         #plugin_board_head_${uid} {
-            width: calc(100% - 8px);
+            width: 100%;
             height: 40%;
             padding: 0 4px;
             overflow: auto;
@@ -183,6 +183,12 @@ window.PGUI = function() {
         }
         else {
             switch(target) {
+                case "button":
+                    return plugin_button;
+                case "icon":
+                    return plugin_button_icon;
+                case "board":
+                    return plugin_board;
                 case "head":
                     return plugin_board_head;
                 case "console":
