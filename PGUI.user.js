@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
 // @namespace    
-// @version      0.1
+// @version      0.1.1
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -10,6 +10,7 @@
 
 window.PGUI = function() {
     let self = this;
+    let uid = self.uid = Math.floor(1e6+Math.random()*9e6).toString(36);
     /* Config */
     this.cfg = {
         draggable: true,
@@ -18,15 +19,15 @@ window.PGUI = function() {
 
     /* Style Sheet */
     let style_sheet = document.createElement("style");
-    style_sheet.id = "style_sheet";
+    style_sheet.id = "style_sheet_"+uid;
     window.document.body.appendChild(style_sheet);
 
     /* Plugin Button */
     let plugin_button = document.createElement("div");
-    plugin_button.id = "plugin_button";
+    plugin_button.id = "plugin_button_"+uid;
     window.document.body.appendChild(plugin_button);
     style_sheet.innerHTML += `
-        #plugin_button {
+        #plugin_button_${uid} {
             position: fixed;
             z-index: 10000;
             right: 10px;
@@ -41,15 +42,15 @@ window.PGUI = function() {
             align-items: center;
             justify-content: center;
         }
-        #plugin_button:hover {
+        #plugin_button_${uid}:hover {
             box-shadow: 0 0 10px 0px #8e8e8e;
         }
-        #plugin_button_icon {
+        #plugin_button_icon_${uid} {
             font-size: 31px;
         }
     `;
     let plugin_button_icon = document.createElement("span");
-    plugin_button_icon.id = "plugin_button_icon";
+    plugin_button_icon.id = "plugin_button_icon_"+uid;
     plugin_button_icon.innerHTML = "⚙";
     plugin_button.appendChild(plugin_button_icon);
 
@@ -59,10 +60,10 @@ window.PGUI = function() {
 
     /* Plugin Menu */
     let plugin_board = document.createElement("div");
-    plugin_board.id = "plugin_board";
+    plugin_board.id = "plugin_board_"+uid;
     window.document.body.appendChild(plugin_board);
     style_sheet.innerHTML += `
-        #plugin_board {
+        #plugin_board_${uid} {
             position: fixed;
             z-index: 9999;
             right: 10px;
@@ -75,15 +76,15 @@ window.PGUI = function() {
             padding: 8px 0;
             display: none;
         }
-        #plugin_board:hover {
+        #plugin_board_${uid}:hover {
             border: solid 1px #424242;
         }
     `;
     let plugin_board_head = document.createElement("div");
-    plugin_board_head.id = "plugin_board_head";
+    plugin_board_head.id = "plugin_board_head_"+uid;
     plugin_board.appendChild(plugin_board_head);
     style_sheet.innerHTML += `
-        #plugin_board_head {
+        #plugin_board_head_${uid} {
             width: 100%;
             height: 40%;
             padding: 0 4px;
@@ -91,10 +92,10 @@ window.PGUI = function() {
         }
     `;
     let plugin_console = document.createElement("div");
-    plugin_console.id = "plugin_console";
+    plugin_console.id = "plugin_console_"+uid;
     plugin_board.appendChild(plugin_console);
     style_sheet.innerHTML += `
-        #plugin_console {
+        #plugin_console_${uid} {
             width: calc(100% - 8px);
             height: 60%;
             padding: 4px 4px 0 4px;
