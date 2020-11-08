@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
-// @date         2020.11.08
-// @version      0.2
+// @date         2020.11.09
+// @version      0.2.1
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -33,8 +33,8 @@ window.PGUI = function() {
             right: 10px;
             bottom: 10px;
             border-radius: 50%;
-            min-width: 40px;
-            min-height: 40px;
+            width: 40px;
+            height: 40px;
             background-color: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 5px 0px #8e8e8e;
             cursor: pointer;
