@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
-// @namespace    
-// @version      0.1.1
+// @date         2020.11.08
+// @version      0.1.2
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -85,7 +85,7 @@ window.PGUI = function() {
     plugin_board.appendChild(plugin_board_head);
     style_sheet.innerHTML += `
         #plugin_board_head_${uid} {
-            width: 100%;
+            width: calc(100% - 8px);
             height: 40%;
             padding: 0 4px;
             overflow: auto;
