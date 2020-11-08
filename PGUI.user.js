@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
 // @date         2020.11.08
-// @version      0.1.3
+// @version      0.2
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -199,4 +199,67 @@ window.PGUI = function() {
         }
     };
     this.elm = this.element;
+    this.document_reader = function(data="") {
+        let rdr = this;
+        this.rid = Math.floor(1e6+Math.random()*9e6).toString(36);
+        this.show = false;
+        this.body = document.createElement("div");
+        this.body.id = "document_reader_" + this.rid;
+        style_sheet.innerHTML += `
+            #document_reader_${this.rid} {
+                display: none;
+                position: fixed;
+                width: calc(100% - 32px);
+                height: calc(100% - 32px);
+                z-index: 999999;
+                background-color: rgba(255,255,255,0.8);
+                margin: 16px;
+                border-radius: 10px;
+                border: solid 1px lightgray;
+                box-shadow: 0 0 0px 30px rgba(0,0,0,0.6);
+            }
+        `;
+        document.body.appendChild(this.body);
+        let cross = document.createElement("span");
+        cross.id = "document_reader_cross_" + this.rid;
+        cross.innerHTML = "⤬";
+        style_sheet.innerHTML += `
+            #document_reader_cross_${this.rid} {
+                position: absolute;
+                right: 8px;
+                top: 2px;
+                font-size: 24px;
+                cursor: pointer;
+            }
+        `;
+        cross.addEventListener("click", () => {
+            rdr.close();
+        });
+        this.body.appendChild(cross);
+        let content = document.createElement("pre");
+        content.id = "document_reader_content_" + this.rid;
+        content.innerHTML = data;
+        style_sheet.innerHTML += `
+            #document_reader_content_${this.rid} {
+                position: absolute;
+                left: 8px;
+                top: 2px;
+                font-size: 16px;
+                width: calc(100% - 64px);
+                height: calc(100% - 36px);
+                overflow: auto;
+            }
+        `;
+        this.body.appendChild(content);
+
+        this.open = function() {
+            rdr.body.style.display = "block";
+            rdr.show = true;
+        };
+        this.close = function() {
+            rdr.body.style.display = "none";
+            rdr.show = false;
+        };
+    };
+    this.dr = this.doc_rdr = this.doc_reader = this.document_reader;
 };
