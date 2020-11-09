@@ -1,16 +1,28 @@
 // ==UserScript==
 // @name         PGUI
 // @date         2020.11.09
-// @version      0.2.2
+// @version      0.3
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
 // @grant        none
 // ==/UserScript==
 
+(function(){
+    window.PGUI_DATA = {
+        UI: [],
+        DOC_READER: []
+    };
+
+    let pgui_style = window.PGUI_STYLE = document.createElement("style");
+    pgui_style.id = "PGUI_GLOBAL_STYLE";
+    window.document.body.appendChild(pgui_style);
+})();
+
 window.PGUI = function() {
     let self = this;
     let uid = this.uid = Math.floor(1e6+Math.random()*9e6).toString(36);
+    PGUI_DATA.UI.push(uid);
     /* Config */
     this.cfg = {
         draggable: true,
@@ -96,7 +108,7 @@ window.PGUI = function() {
     plugin_board.appendChild(plugin_console);
     style_sheet.innerHTML += `
         #plugin_console_${uid} {
-            width: calc(100% - 8px);
+            width: 100%;
             height: 60%;
             padding: 4px 4px 0 4px;
             overflow: auto;
@@ -199,13 +211,17 @@ window.PGUI = function() {
         }
     };
     this.elm = this.element;
-    this.document_reader = function(data="") {
+};
+
+window.PGUI_TOOLS = {
+    document_reader: function(data="") {
         let rdr = this;
         this.rid = Math.floor(1e6+Math.random()*9e6).toString(36);
+        PGUI_DATA.DOC_READER.push(this.rid);
         this.show = false;
         this.body = document.createElement("div");
         this.body.id = "document_reader_" + this.rid;
-        style_sheet.innerHTML += `
+        PGUI_STYLE.innerHTML += `
             #document_reader_${this.rid} {
                 display: none;
                 position: fixed;
@@ -225,7 +241,7 @@ window.PGUI = function() {
         let cross = document.createElement("span");
         cross.id = "document_reader_cross_" + this.rid;
         cross.innerHTML = "⤬";
-        style_sheet.innerHTML += `
+        PGUI_STYLE.innerHTML += `
             #document_reader_cross_${this.rid} {
                 position: absolute;
                 right: 8px;
@@ -241,7 +257,7 @@ window.PGUI = function() {
         let content = document.createElement("pre");
         content.id = "document_reader_content_" + this.rid;
         content.innerHTML = data;
-        style_sheet.innerHTML += `
+        PGUI_STYLE.innerHTML += `
             #document_reader_content_${this.rid} {
                 position: absolute;
                 left: 8px;
@@ -262,6 +278,20 @@ window.PGUI = function() {
             rdr.body.style.display = "none";
             rdr.show = false;
         };
-    };
-    this.dr = this.doc_rdr = this.doc_reader = this.document_reader;
+    },
+    select_element: function(cb=null) {
+        let title = document.title;
+        document.title = "Element Selection Mode Activated - Please Click One Element.";
+        return new Promise(resolve => {
+            document.body.addEventListener("click", e => {
+                e.preventDefault(); e.stopPropagation();
+                document.title = title;
+                if(cb != null) cb(e.target);
+                resolve(e.target);
+            }, {once: true});
+        });
+    }
 };
+
+PGUI_TOOLS.dr = PGUI_TOOLS.doc_rdr = PGUI_TOOLS.doc_reader = PGUI_TOOLS.document_reader;
+PGUI_TOOLS.se = PGUI_TOOLS.sel_elm = PGUI_TOOLS.select_element;
