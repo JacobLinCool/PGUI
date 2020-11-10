@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
-// @date         2020.11.09
-// @version      0.3
+// @date         2020.11.10
+// @version      0.3.1
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -211,6 +211,15 @@ window.PGUI = function() {
         }
     };
     this.elm = this.element;
+    this.remove = function() {
+        for(let i = 0; i < PGUI_DATA.UI.length; i ++)
+            if(PGUI_DATA.UI[i] == self.uid) PGUI_DATA.UI.splice(i, 1);
+        style_sheet.remove();
+        plugin_button.remove();
+        plugin_board.remove();
+        Object.keys(self).forEach(c => { delete self[c]; });
+        return null;
+    };
 };
 
 window.PGUI_TOOLS = {
@@ -278,17 +287,26 @@ window.PGUI_TOOLS = {
             rdr.body.style.display = "none";
             rdr.show = false;
         };
+        this.remove = function() {
+            for(let i = 0; i < PGUI_DATA.DOC_READER.length; i ++)
+                if(PGUI_DATA.DOC_READER[i] == rdr.rid) PGUI_DATA.DOC_READER.splice(i, 1);
+            rdr.body.remove();
+            Object.keys(rdr).forEach(c => { delete rdr[c]; });
+            return null;
+        };
     },
     select_element: function(cb=null) {
         let title = document.title;
         document.title = "Element Selection Mode Activated - Please Click One Element.";
         return new Promise(resolve => {
-            document.body.addEventListener("click", e => {
-                e.preventDefault(); e.stopPropagation();
-                document.title = title;
-                if(cb != null) cb(e.target);
-                resolve(e.target);
-            }, {once: true});
+            setTimeout(() => {
+                document.body.addEventListener("click", e => {
+                    e.preventDefault(); e.stopPropagation();
+                    document.title = title;
+                    if(cb != null) cb(e.target);
+                    resolve(e.target);
+                }, {once: true});
+            }, 20);
         });
     }
 };
