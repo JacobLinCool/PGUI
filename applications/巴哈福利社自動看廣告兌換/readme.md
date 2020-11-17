@@ -11,3 +11,6 @@
 2. 下載並安裝 [巴哈福利社自動看廣告兌換.user.js](https://github.com/JacobLinCool/PGUI/raw/main/applications/巴哈福利社自動看廣告兌換/巴哈福利社自動看廣告兌換.user.js) 及[其輔助套件](https://github.com/JacobLinCool/PGUI/raw/main/applications/巴哈福利社自動看廣告兌換/巴哈福利社自動看廣告兌換%20輔助套件.user.js)。
 3. 重新載入[巴哈姆特勇者福利社](https://fuli.gamer.com.tw/)以啟用程式。
 4. 點擊網頁右下角之「齒輪按鈕」開啟控制面板並啟動程式。
+
+## 關閉方法
+直接點擊瀏覽器右上角之「Tampermonkey 按鈕」開啟選單點選即可關閉程式。
