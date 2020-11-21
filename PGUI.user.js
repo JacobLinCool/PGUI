@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PGUI
-// @date         2020.11.10
-// @version      0.3.1
+// @date         2020.11.21
+// @version      0.3.2
 // @description  PGUI
 // @author       JacobLinCool
 // @match        http://*/*
@@ -295,21 +295,28 @@ window.PGUI_TOOLS = {
             return null;
         };
     },
-    select_element: function(cb=null) {
-        let title = document.title;
-        document.title = "Element Selection Mode Activated - Please Click One Element.";
+    select_element: function(callback=null) {
         return new Promise(resolve => {
             setTimeout(() => {
                 document.body.addEventListener("click", e => {
                     e.preventDefault(); e.stopPropagation();
-                    document.title = title;
-                    if(cb != null) cb(e.target);
+                    if(typeof callback == "function") callback(e.target);
                     resolve(e.target);
                 }, {once: true});
             }, 20);
         });
+    },
+    finding_elements: async function(css_query_string, number=1, interval=100) {
+        let d = await new Promise(resolve => {
+            let itv = setInterval(() => {
+                if(document.querySelectorAll(css_query_string).length >= number) resolve(itv);
+            }, interval);
+        });
+        clearInterval(d);
+        return Array.from(document.querySelectorAll(css_query_string));
     }
 };
 
 PGUI_TOOLS.dr = PGUI_TOOLS.doc_rdr = PGUI_TOOLS.doc_reader = PGUI_TOOLS.document_reader;
 PGUI_TOOLS.se = PGUI_TOOLS.sel_elm = PGUI_TOOLS.select_element;
+PGUI_TOOLS.fe = PGUI_TOOLS.find_elm = PGUI_TOOLS.finding_elm = PGUI_TOOLS.finding_element = PGUI_TOOLS.finding_elements;
