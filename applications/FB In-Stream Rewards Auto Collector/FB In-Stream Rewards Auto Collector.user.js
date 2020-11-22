@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FB In-Stream Rewards Auto Collector
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  FB In-Stream Rewards Auto Collector
 // @author       JacobLinCool
 // @match        https://www.facebook.com/*/videos/*
@@ -90,6 +90,7 @@
     function autoCollector() {
         let console = ui.console;
         var self = this;
+        self.exc = new exc_handler();
         self.start = () => {
             self.total = "已經獲得：\n\n";
             self.log += "\n-- 日誌紀錄開始 --\n";
@@ -102,18 +103,17 @@
                             target[i].click();
                             console.log(`[${new Date().toLocaleTimeString("en")}] 成功點擊領取按鈕`);
                             self.log += `${new Date().toLocaleTimeString()}  成功點擊領取按鈕\n`;
-                            setTimeout(
-                                (function(self) {
-                                    return function() {
-                                        let item = document.querySelector(self.settings.response).innerHTML;
-                                        console.log(`[${new Date().toLocaleTimeString("en")}] 獲得物品：${item}`);
-                                        self.log += `${new Date().toLocaleTimeString()}  獲得物品：${item}\n`;
-                                        self.rewards.push(item);
-                                        self.total += `${item}\n`;
-                                        target[i].click();
-                                    }
-                                })(self), self.settings.return
-                            );
+                            setTimeout(function() {
+                                let target = document.querySelectorAll(self.settings.target);
+                                let item = document.querySelector(self.settings.response).innerHTML;
+                                console.log(`[${new Date().toLocaleTimeString("en")}] 獲得物品：${item}`);
+                                self.log += `${new Date().toLocaleTimeString()}  獲得物品：${item}\n`;
+                                self.rewards.push(item);
+                                self.total += `${item}\n`;
+                                for(let i = 0; i < target.length; i++) {
+                                    if(target[i].innerHTML.includes("關閉")) target[i].click();
+                                };
+                            }, self.settings.return);
                         }
                         if(Date.now()-self.time > self.settings.limit*60000) {
                             console.log("任務已執行"+parseInt((Date.now()-self.time)/60000)+"分鐘，暫停任務。");
@@ -144,13 +144,61 @@
         self.interval = 0;
         self.settings = {
             target: ".oajrlxb2.s1i5eluu.gcieejh5.bn081pho.humdl8nn.izx4hr6d",
-            response: ".oi732d6d.ik7dh3pa.d2edcug0.qv66sw1b.c1et5uql.a8c37x1j.muag1w35.enqfppq2.a5q79mjw.g1cxx5fr.ekzkrbhg.oo9gr5id.hzawbc8m",
-            interval: 15000,
+            response: ".d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.a5q79mjw.g1cxx5fr.ekzkrbhg.oo9gr5id.hzawbc8m",
+            interval: 3000,
             return: 5000,
             limit: 360
         };
         self.total = "";
         self.help = "keywords: start(), stop(), set(key, value), total, settings, help";
         self.log = "";
+    }
+
+    function exc_handler() {
+        let self = this;
+        self.cycle = 0;
+        self.last_duration = 0;
+        self.clicked_play_btn = 0;
+        self.id = setInterval(async () => {
+            try {
+                let player = document.querySelectorAll("video")[0];
+
+                if(player.paused) {
+                    let play_btn = document.querySelector(".oajrlxb2.g5ia77u1.gcieejh5.bn081pho.humdl8nn.izx4hr6d.rq0escxv.nhd2j8a9.q9uorilb.p7hjln8o.qjjbsfad.fv0vnmcu.w0hvl6rk.ggphbty4.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.l9j0dhe7.abiwlrkh.p8dawk7l.i2p6rm4e.jnigpg78.byekypgc");
+                    play_btn.click();
+                    self.clicked_play_btn++;
+                }
+                await wait(3000);
+                if(self.last_duration == player.duration) {
+                    throw new Error("Unknown Problem");
+                }
+
+                self.last_duration = player.duration;
+                self.cycle++;
+            }
+            catch(e) {
+                if(e == "Unknown Problem" && self.id) {
+                    console.log("[Exception Handler] Trying Reload This Page To Solve The Unknown Problem.");
+                    location.reload(true);
+                }
+            }
+        }, 10000);
+        self.stop = function() {clearInterval(self.id); self.id = 0;};
+    }
+
+    async function check_live() {
+        if(document.querySelector(".jbu8tgem").innerText.includes("直播")) {
+            document.querySelector(".jbu8tgem").parentElement.parentElement.querySelector(`[role=presentation]`).click();
+            await wait(1000);
+            document.querySelector(".jbu8tgem").parentElement.parentElement.querySelector(`[role=presentation]`).click();
+        }
+    }
+
+    function wait(t=1000) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(t);
+            }, t);
+        });
     }
 })();
